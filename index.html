@@ -31,11 +31,8 @@
       <div class="header-right">
         <div class="header-badge">Guías KDIGO 2024</div>
         <div class="visit-counter">
-          <img
-            src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fjalzam.github.io%2Fnefro-velocimetro%2F&count_bg=%2338bdf8&title_bg=%231e293b&icon=eye&icon_color=%2338bdf8&title=visitas&edge_flat=true"
-            alt="Contador de visitas"
-            class="visit-badge"
-          />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span id="visit-count">...</span> visitas
         </div>
       </div>
     </div>
@@ -201,83 +198,40 @@
     </section>
   </main>
 
-  <!-- ══════════════════════════════════════════════════════════
-       SECCIÓN PARA IMPRESIÓN — oculta en pantalla
-  ══════════════════════════════════════════════════════════ -->
+  <!-- SECCIÓN PARA IMPRESIÓN — oculta en pantalla, visible al imprimir -->
   <div id="print-section" class="print-only">
+    <!-- Header -->
     <div class="pr-header">
-      <div class="pr-logo">&#9676;&#9676; Velocímetro Renal</div>
-      <div class="pr-date" id="pr-date"></div>
+      <div class="pr-logo">Velocímetro Renal</div>
+      <div id="pr-date" class="pr-date"></div>
     </div>
 
-    <h2 class="pr-title">Resultado de Función Renal del Paciente</h2>
+    <h2 class="pr-title">Resultado de Función Renal</h2>
 
-    <div class="pr-main-result">
-      <div class="pr-left">
-        <div class="pr-label">Tasa de Filtración Glomerular (TFG)</div>
-        <div class="pr-value" id="pr-tfg"></div>
-        <div class="pr-unit">mL/min/1.73 m²</div>
-      </div>
-      <div class="pr-right">
-        <div class="pr-stage-box" id="pr-stage-box"></div>
-      </div>
+    <!-- Valor principal -->
+    <div class="pr-value-block">
+      <div class="pr-val-label">Tasa de Filtración Glomerular (TFG)</div>
+      <div class="pr-val-number"><span id="pr-tfg">--</span><span class="pr-val-unit"> mL/min/1.73 m²</span></div>
+      <div class="pr-stage-line" id="pr-stage-line"></div>
     </div>
 
-    <!-- Escala horizontal -->
-    <div class="pr-scale-wrap">
-      <div class="pr-scale-bar">
-        <div class="pr-seg" style="flex:15" title="G5">G5</div>
-        <div class="pr-seg" style="flex:15" title="G4">G4</div>
-        <div class="pr-seg" style="flex:15" title="G3b">G3b</div>
-        <div class="pr-seg" style="flex:15" title="G3a">G3a</div>
-        <div class="pr-seg" style="flex:30" title="G2">G2</div>
-        <div class="pr-seg" style="flex:30" title="G1">G1</div>
-      </div>
-      <div class="pr-scale-nums">
-        <span>0</span><span>15</span><span>30</span><span>45</span><span>60</span><span>90</span><span>120</span>
-      </div>
-      <div class="pr-needle-row">
-        <div class="pr-needle" id="pr-needle">&#9650;</div>
-      </div>
+    <!-- Imagen del velocímetro (canvas capturado) -->
+    <div class="pr-canvas-wrap">
+      <img id="pr-speedometer-img" alt="Velocímetro" class="pr-speedometer-img" />
     </div>
 
-    <!-- Albuminuria -->
-    <div id="pr-alb-section" class="pr-alb-section" style="display:none">
-      <div class="pr-label">Albuminuria (uACR)</div>
-      <div class="pr-alb-result" id="pr-alb-result"></div>
+    <!-- Albuminuria (sólo si se ingresó) -->
+    <div id="pr-alb-block" style="display:none" class="pr-alb-block">
+      <span class="pr-alb-label">Albuminuria (uACR):</span>
+      <span id="pr-alb-text"></span>
     </div>
 
-    <!-- Descripción del estadio -->
+    <!-- Descripción clínica -->
     <div class="pr-description" id="pr-description"></div>
 
-    <!-- Tablas KDIGO -->
-    <div class="pr-tables">
-      <div class="pr-table-col">
-        <h3>Clasificación TFG — KDIGO</h3>
-        <table class="pr-table">
-          <tr><th>Estadio</th><th>TFG (mL/min/1.73 m²)</th><th>Descripción</th></tr>
-          <tr><td>G1</td><td>&#8805; 90</td><td>Normal o alta</td></tr>
-          <tr><td>G2</td><td>60 – 89</td><td>Levemente disminuida</td></tr>
-          <tr><td>G3a</td><td>45 – 59</td><td>Leve a moderada</td></tr>
-          <tr><td>G3b</td><td>30 – 44</td><td>Moderada a severa</td></tr>
-          <tr><td>G4</td><td>15 – 29</td><td>Severamente disminuida</td></tr>
-          <tr><td>G5</td><td>&lt; 15</td><td>Falla renal</td></tr>
-        </table>
-      </div>
-      <div class="pr-table-col">
-        <h3>Clasificación Albuminuria</h3>
-        <table class="pr-table">
-          <tr><th>Cat.</th><th>uACR (mg/g)</th><th>Descripción</th></tr>
-          <tr><td>A1</td><td>&lt; 30</td><td>Normal / leve</td></tr>
-          <tr><td>A2</td><td>30 – 300</td><td>Moderada</td></tr>
-          <tr><td>A3</td><td>&gt; 300</td><td>Severa</td></tr>
-        </table>
-      </div>
-    </div>
-
     <div class="pr-disclaimer">
-      Esta hoja es solo informativa y educativa. No reemplaza la consulta médica.<br>
-      Basada en guías <strong>KDIGO 2024</strong> &nbsp;·&nbsp; Fórmula <strong>CKD-EPI 2021</strong> &nbsp;·&nbsp; jalzam.github.io/nefro-velocimetro
+      Esta hoja es informativa y educativa. No reemplaza la consulta médica.&nbsp;·&nbsp;
+      Guías <strong>KDIGO 2024</strong>&nbsp;·&nbsp;Fórmula <strong>CKD-EPI 2021</strong>&nbsp;·&nbsp;jalzam.github.io/nefro-velocimetro
     </div>
   </div>
 

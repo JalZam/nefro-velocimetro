@@ -588,58 +588,209 @@ function calcularEPI() {
 }
 
 // ─────────────────────────────────────────────────────────────
+// VELOCÍMETRO PARA IMPRESIÓN (B&W, fondo blanco)
+// ─────────────────────────────────────────────────────────────
+function drawPrintSpeedometer(gfr) {
+  const W = 700, H = 380;
+  const offscreen = document.createElement('canvas');
+  offscreen.width  = W;
+  offscreen.height = H;
+  const ctx = offscreen.getContext('2d');
+
+  // Fondo blanco
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, H);
+
+  const cx = W / 2;
+  const cy = H - 70;
+  const maxRh = cx - 68;
+  const maxRv = cy - 42;
+  const R = Math.min(maxRh, maxRv);
+
+  const startRad = degToRad(180);
+  const endRad   = degToRad(360);
+
+  // Línea base horizontal
+  ctx.beginPath();
+  ctx.moveTo(cx - R - 2, cy);
+  ctx.lineTo(cx + R + 2, cy);
+  ctx.strokeStyle = '#cccccc';
+  ctx.lineWidth   = 1.5;
+  ctx.stroke();
+
+  // Arco background
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, startRad, endRad, false);
+  ctx.lineWidth   = 44;
+  ctx.strokeStyle = '#f0f0f0';
+  ctx.lineCap     = 'round';
+  ctx.stroke();
+
+  // Segmentos con grises escalonados (sin color = ahorra tinta)
+  const GRAY_STAGES = [
+    { min:0,  max:15,  gray:'#999' },
+    { min:15, max:30,  gray:'#aaa' },
+    { min:30, max:45,  gray:'#bbb' },
+    { min:45, max:60,  gray:'#ccc' },
+    { min:60, max:90,  gray:'#ddd' },
+    { min:90, max:120, gray:'#e8e8e8' },
+  ];
+  GRAY_STAGES.forEach(seg => {
+    const aS = gfrToAngle(seg.min);
+    const aE = gfrToAngle(seg.max);
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, aS, aE, false);
+    ctx.lineWidth   = 40;
+    ctx.strokeStyle = seg.gray;
+    ctx.lineCap     = 'butt';
+    ctx.stroke();
+  });
+
+  // Ticks y etiquetas
+  const tickValues = [0, 15, 30, 45, 60, 90, 120];
+  tickValues.forEach(val => {
+    const angle = gfrToAngle(val);
+    const cosA = Math.cos(angle), sinA = Math.sin(angle);
+    ctx.beginPath();
+    ctx.moveTo(cx + cosA * (R + 5),  cy + sinA * (R + 5));
+    ctx.lineTo(cx + cosA * (R + 22), cy + sinA * (R + 22));
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth   = 2;
+    ctx.lineCap     = 'round';
+    ctx.stroke();
+    ctx.fillStyle    = '#333';
+    ctx.font         = 'bold 13px Inter, sans-serif';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(val), cx + cosA * (R + 36), cy + sinA * (R + 36));
+  });
+
+  // Etiquetas de estadio dentro del arco
+  const midR = R - 58;
+  const STAGE_LABELS = [
+    { label:'G5', midVal:7.5 },
+    { label:'G4', midVal:22.5 },
+    { label:'G3b',midVal:37.5 },
+    { label:'G3a',midVal:52.5 },
+    { label:'G2', midVal:75 },
+    { label:'G1', midVal:105 },
+  ];
+  STAGE_LABELS.forEach(s => {
+    const angle = gfrToAngle(s.midVal);
+    const lx = cx + Math.cos(angle) * midR;
+    const ly = cy + Math.sin(angle) * midR;
+    ctx.save();
+    ctx.translate(lx, ly);
+    ctx.rotate(angle + Math.PI / 2);
+    ctx.fillStyle    = '#444';
+    ctx.font         = 'bold 11px Inter, sans-serif';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(s.label, 0, 0);
+    ctx.restore();
+  });
+
+  // Aguja negra
+  if (gfr !== null) {
+    const needleAngle = gfrToAngle(Math.min(Math.max(gfr, 0), 120));
+    const needleLen   = R - 12;
+    const needleTail  = 26;
+    const nx = Math.cos(needleAngle);
+    const ny = Math.sin(needleAngle);
+    const perpX = -ny * 4, perpY = nx * 4;
+
+    ctx.beginPath();
+    ctx.moveTo(cx + nx * needleLen, cy + ny * needleLen);
+    ctx.lineTo(cx - nx * needleTail + perpX, cy - ny * needleTail + perpY);
+    ctx.lineTo(cx - nx * needleTail - perpX, cy - ny * needleTail - perpY);
+    ctx.closePath();
+    ctx.fillStyle = '#111';
+    ctx.fill();
+
+    // Hub
+    ctx.beginPath();
+    ctx.arc(cx, cy, 12, 0, Math.PI * 2);
+    ctx.fillStyle = '#333';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+  }
+
+  // Etiquetas extremos
+  ctx.fillStyle    = '#333';
+  ctx.font         = 'bold 9px Inter, sans-serif';
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText('FALLA', cx - R, cy + 8);
+  ctx.fillText('RENAL', cx - R, cy + 19);
+  ctx.fillText('NORMAL', cx + R, cy + 8);
+  ctx.fillText('/ ALTA',  cx + R, cy + 19);
+
+  return offscreen.toDataURL('image/png');
+}
+
+// ─────────────────────────────────────────────────────────────
 // IMPRESIÓN (PDF)
 // ─────────────────────────────────────────────────────────────
 function printReport() {
   const tfgVal = document.getElementById('gfr-input').value.trim();
-  if(!tfgVal) return;
+  if (!tfgVal) return;
 
   const gfrParsed = parseFloat(tfgVal);
-  const stage = getStageByGFR(gfrParsed);
+  if (isNaN(gfrParsed)) return;
+
+  const stage = getStage(gfrParsed) || getStageByGFR(gfrParsed);
 
   // Fecha
-  const dateStr = new Date().toLocaleDateString('es-ES', { 
-    year: 'numeric', month: 'long', day: 'numeric',
-    hour: '2-digit', minute: '2-digit'
+  const dateStr = new Date().toLocaleDateString('es-ES', {
+    year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit'
   });
   document.getElementById('pr-date').textContent = dateStr;
 
-  // Datos principales
+  // TFG
   document.getElementById('pr-tfg').textContent = gfrParsed.toFixed(1);
-  
-  // Badge estadio
-  const stageBox = document.getElementById('pr-stage-box');
-  stageBox.textContent = `Estadio ${stage.label} — ${stage.name}`;
-  stageBox.style.borderColor = stage.color;
-  stageBox.style.color = '#111'; // High contrast
-  stageBox.style.backgroundColor = `${stage.color}15`;
 
-  // Descripción
-  document.getElementById('pr-description').innerHTML = `
-    <strong>Interpretación:</strong> ${stage.desc}<br><br>
-    <strong>KDIGO Range:</strong> ${stage.range} mL/min/1.73 m²
-  `;
-
-  // Aguja (needle)
-  // Escala es de 0 a 120. Convertimos TFG a porcentaje.
-  const clampedGfr = Math.min(Math.max(gfrParsed, 0), 120);
-  const percent = (clampedGfr / 120) * 100;
-  // Ajuste fino para centrar el cursor sobre el número
-  document.getElementById('pr-needle').style.left = `calc(${percent}% - 6px)`;
-
-  // Albuminuria
-  const albInput = document.getElementById('alb-input').value.trim();
-  const prAlbSection = document.getElementById('pr-alb-section');
-  if(albInput && !isNaN(parseFloat(albInput))) {
-    const albStage = getAlbStage(parseFloat(albInput));
-    document.getElementById('pr-alb-result').innerHTML = `
-      <strong>${albStage.label}</strong> — ${albStage.name} (${parseFloat(albInput).toFixed(1)} mg/g)
-    `;
-    prAlbSection.style.display = 'block';
-  } else {
-    prAlbSection.style.display = 'none';
+  // Estadio
+  const stageLine = document.getElementById('pr-stage-line');
+  if (stage) {
+    stageLine.textContent = `${stage.label} — ${stage.name}`;
+    document.getElementById('pr-description').textContent = stage.description;
   }
 
-  // Ejecutar impresión del navegador
+  // Imagen del velocímetro (B&W limpio)
+  const imgData = drawPrintSpeedometer(gfrParsed);
+  document.getElementById('pr-speedometer-img').src = imgData;
+
+  // Albuminuria
+  const albRaw = document.getElementById('alb-input').value.trim();
+  const prAlbBlock = document.getElementById('pr-alb-block');
+  if (albRaw && !isNaN(parseFloat(albRaw))) {
+    const albStage = getAlbStage(parseFloat(albRaw));
+    document.getElementById('pr-alb-text').textContent =
+      `${parseFloat(albRaw).toFixed(1)} mg/g — ${albStage.label}: ${albStage.name}`;
+    prAlbBlock.style.display = 'block';
+  } else {
+    prAlbBlock.style.display = 'none';
+  }
+
   window.print();
 }
+
+// ─────────────────────────────────────────────────────────────
+// CONTADOR DE VISITAS (CountAPI)
+// ─────────────────────────────────────────────────────────────
+(function loadVisitCount() {
+  const el = document.getElementById('visit-count');
+  if (!el) return;
+  fetch('https://api.countapi.xyz/hit/jalzam-nefro-velocimetro/visits')
+    .then(r => r.json())
+    .then(data => {
+      if (data && data.value != null) {
+        el.textContent = data.value.toLocaleString();
+      } else { el.textContent = '--'; }
+    })
+    .catch(() => { el.textContent = '--'; });
+})();
+
