@@ -135,7 +135,7 @@ function drawSpeedometer(gfr = null) {
   ctx.beginPath();
   ctx.moveTo(cx - R - 2, cy);
   ctx.lineTo(cx + R + 2, cy);
-  ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+  ctx.strokeStyle = 'rgba(100,116,139,0.18)';
   ctx.lineWidth   = 1.5;
   ctx.stroke();
 
@@ -143,7 +143,7 @@ function drawSpeedometer(gfr = null) {
   ctx.beginPath();
   ctx.arc(cx, cy, R, startRad, endRad, false);
   ctx.lineWidth   = 44;
-  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.strokeStyle = 'rgba(100,116,139,0.07)';
   ctx.lineCap     = 'round';
   ctx.stroke();
 
@@ -177,14 +177,14 @@ function drawSpeedometer(gfr = null) {
     ctx.beginPath();
     ctx.moveTo(cx + cosA * (R + 5),  cy + sinA * (R + 5));
     ctx.lineTo(cx + cosA * (R + 22), cy + sinA * (R + 22));
-    ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+    ctx.strokeStyle = 'rgba(71,85,105,0.5)';
     ctx.lineWidth   = 2.5;
     ctx.lineCap     = 'round';
     ctx.stroke();
 
     // Etiqueta
     const lblR = R + 36;
-    ctx.fillStyle    = 'rgba(240,244,255,0.85)';
+    ctx.fillStyle    = '#334155';
     ctx.font         = 'bold 12px Inter, sans-serif';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
@@ -198,7 +198,7 @@ function drawSpeedometer(gfr = null) {
     ctx.beginPath();
     ctx.moveTo(cx + Math.cos(angle) * (R + 3),  cy + Math.sin(angle) * (R + 3));
     ctx.lineTo(cx + Math.cos(angle) * (R + 13), cy + Math.sin(angle) * (R + 13));
-    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.strokeStyle = 'rgba(71,85,105,0.18)';
     ctx.lineWidth   = 1.5;
     ctx.stroke();
   }
@@ -267,17 +267,17 @@ function drawSpeedometer(gfr = null) {
   // ── 7. Valor TFG debajo del hub ───────────────────────────────
   const valueY = cy + 36;
   if (gfr !== null) {
-    ctx.fillStyle    = '#ffffff';
+    ctx.fillStyle    = '#1e293b';
     ctx.font         = 'bold 42px Outfit, sans-serif';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(Math.round(gfr), cx, valueY);
 
-    ctx.fillStyle = 'rgba(148,163,184,0.85)';
+    ctx.fillStyle = 'rgba(71,85,105,0.85)';
     ctx.font      = '12px Inter, sans-serif';
     ctx.fillText('mL/min/1.73 m²', cx, valueY + 30);
   } else {
-    ctx.fillStyle    = 'rgba(148,163,184,0.32)';
+    ctx.fillStyle    = 'rgba(100,116,139,0.5)';
     ctx.font         = '14px Inter, sans-serif';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';

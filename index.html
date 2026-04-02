@@ -11,29 +11,29 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="bg-glow"></div>
 
   <header class="site-header">
     <div class="header-inner">
       <div class="logo">
         <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
-          <ellipse cx="14" cy="20" rx="8" ry="13" stroke="url(#grad1)" stroke-width="2.5" fill="none"/>
-          <ellipse cx="26" cy="20" rx="8" ry="13" stroke="url(#grad1)" stroke-width="2.5" fill="none"/>
-          <defs>
-            <linearGradient id="grad1" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#38bdf8"/>
-              <stop offset="100%" stop-color="#818cf8"/>
-            </linearGradient>
-          </defs>
+          <ellipse cx="14" cy="20" rx="8" ry="13" stroke="#2563eb" stroke-width="2.5" fill="none" opacity="0.7"/>
+          <ellipse cx="26" cy="20" rx="8" ry="13" stroke="#2563eb" stroke-width="2.5" fill="none"/>
         </svg>
-        <span>Velocímetro Renal</span>
+        <div>
+          <div class="logo-title">Velocímetro Renal</div>
+          <div class="logo-sub">TFG · KDIGO 2024 · CKD-EPI 2021</div>
+        </div>
       </div>
       <div class="header-right">
-        <div class="header-badge">Guías KDIGO 2024</div>
+        <a href="https://kdigo.org/guidelines/ckd-evaluation-and-management/" target="_blank" rel="noopener" class="header-link">Guías KDIGO 2024 ↗</a>
         <div class="visit-counter">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           <span id="visit-count">...</span> visitas
         </div>
+        <button class="btn-reset" onclick="window.location.reload()" title="Nueva consulta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.87"/></svg>
+          Nueva consulta
+        </button>
       </div>
     </div>
   </header>
