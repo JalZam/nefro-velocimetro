@@ -779,16 +779,16 @@ function printReport() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// CONTADOR DE VISITAS (CountAPI)
+// CONTADOR DE VISITAS
 // ─────────────────────────────────────────────────────────────
 (function loadVisitCount() {
   const el = document.getElementById('visit-count');
   if (!el) return;
-  fetch('https://api.countapi.xyz/hit/jalzam-nefro-velocimetro/visits')
+  fetch('https://api.counterapi.dev/v1/jalzam-nefro-velocimetro/visits/up')
     .then(r => r.json())
     .then(data => {
-      if (data && data.value != null) {
-        el.textContent = data.value.toLocaleString();
+      if (data && data.count != null) {
+        el.textContent = Number(data.count).toLocaleString();
       } else { el.textContent = '--'; }
     })
     .catch(() => { el.textContent = '--'; });
