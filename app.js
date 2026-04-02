@@ -586,3 +586,60 @@ function calcularEPI() {
   const body = document.getElementById('accordion-body');
   if (!body.hidden) toggleAccordion();
 }
+
+// ─────────────────────────────────────────────────────────────
+// IMPRESIÓN (PDF)
+// ─────────────────────────────────────────────────────────────
+function printReport() {
+  const tfgVal = document.getElementById('gfr-input').value.trim();
+  if(!tfgVal) return;
+
+  const gfrParsed = parseFloat(tfgVal);
+  const stage = getStageByGFR(gfrParsed);
+
+  // Fecha
+  const dateStr = new Date().toLocaleDateString('es-ES', { 
+    year: 'numeric', month: 'long', day: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+  document.getElementById('pr-date').textContent = dateStr;
+
+  // Datos principales
+  document.getElementById('pr-tfg').textContent = gfrParsed.toFixed(1);
+  
+  // Badge estadio
+  const stageBox = document.getElementById('pr-stage-box');
+  stageBox.textContent = `Estadio ${stage.label} — ${stage.name}`;
+  stageBox.style.borderColor = stage.color;
+  stageBox.style.color = '#111'; // High contrast
+  stageBox.style.backgroundColor = `${stage.color}15`;
+
+  // Descripción
+  document.getElementById('pr-description').innerHTML = `
+    <strong>Interpretación:</strong> ${stage.desc}<br><br>
+    <strong>KDIGO Range:</strong> ${stage.range} mL/min/1.73 m²
+  `;
+
+  // Aguja (needle)
+  // Escala es de 0 a 120. Convertimos TFG a porcentaje.
+  const clampedGfr = Math.min(Math.max(gfrParsed, 0), 120);
+  const percent = (clampedGfr / 120) * 100;
+  // Ajuste fino para centrar el cursor sobre el número
+  document.getElementById('pr-needle').style.left = `calc(${percent}% - 6px)`;
+
+  // Albuminuria
+  const albInput = document.getElementById('alb-input').value.trim();
+  const prAlbSection = document.getElementById('pr-alb-section');
+  if(albInput && !isNaN(parseFloat(albInput))) {
+    const albStage = getAlbStage(parseFloat(albInput));
+    document.getElementById('pr-alb-result').innerHTML = `
+      <strong>${albStage.label}</strong> — ${albStage.name} (${parseFloat(albInput).toFixed(1)} mg/g)
+    `;
+    prAlbSection.style.display = 'block';
+  } else {
+    prAlbSection.style.display = 'none';
+  }
+
+  // Ejecutar impresión del navegador
+  window.print();
+}
