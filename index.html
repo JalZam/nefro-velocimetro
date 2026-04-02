@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velocímetro Renal — TFG (Tasa de Filtración Glomerular)</title>
+  <meta name="description" content="Herramienta educativa para pacientes nefrológicos: visualiza tu Tasa de Filtración Glomerular, calcula con CKD-EPI 2021 y clasifica la albuminuria según KDIGO." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+          <ellipse cx="14" cy="20" rx="8" ry="13" stroke="url(#grad1)" stroke-width="2.5" fill="none"/>
+          <ellipse cx="26" cy="20" rx="8" ry="13" stroke="url(#grad1)" stroke-width="2.5" fill="none"/>
+          <defs>
+            <linearGradient id="grad1" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#38bdf8"/>
+              <stop offset="100%" stop-color="#818cf8"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>Velocímetro Renal</span>
+      </div>
+      <div class="header-badge">Guías KDIGO 2024</div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="hero">
+      <h1 class="hero-title">¿A qué velocidad trabaja<br/><span class="gradient-text">tu riñón?</span></h1>
+      <p class="hero-subtitle">
+        Así como un carro tiene velocímetro, tus riñones tienen su propia "velocidad" llamada
+        <strong>Tasa de Filtración Glomerular (TFG)</strong>. Entre más alta, mejor funciona tu riñón.
+      </p>
+    </section>
+
+    <!-- PANEL PRINCIPAL: input izquierda + velocímetro derecha -->
+    <section class="main-panel card">
+
+      <!-- ── Columna izquierda ── -->
+      <div class="panel-left">
+
+        <!-- TFG directa -->
+        <div class="input-group">
+          <label for="gfr-input" class="input-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+            Tu TFG
+          </label>
+          <div class="input-row">
+            <input id="gfr-input" type="number" min="0" max="200" placeholder="ej. 55" class="gfr-input" autocomplete="off" />
+          </div>
+          <p class="input-unit">mL/min/1.73 m²</p>
+        </div>
+
+        <!-- Albuminuria -->
+        <div class="input-group">
+          <label for="alb-input" class="input-label alb-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 4-2.5 7.5-6 9.3V22H8v-.7C4.5 19.5 2 16 2 12A10 10 0 0 1 12 2z"/><path d="M12 6v6l4 2"/></svg>
+            Albuminuria (uACR)
+          </label>
+          <div class="input-row">
+            <input id="alb-input" type="number" min="0" placeholder="ej. 45" class="gfr-input alb-input" autocomplete="off" />
+          </div>
+          <p class="input-unit">mg/g</p>
+        </div>
+
+        <!-- Acordeón: Calcular TFG con CKD-EPI 2021 -->
+        <div class="calc-accordion">
+          <button class="accordion-toggle" id="accordion-btn" onclick="toggleAccordion()" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            Calcular TFG con CKD-EPI 2021
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+
+          <div class="accordion-body" id="accordion-body" hidden>
+            <!-- Fórmula selector -->
+            <div class="formula-tabs">
+              <button class="formula-tab active" id="tab-cr" onclick="switchFormula('cr')">Solo Creatinina</button>
+              <button class="formula-tab" id="tab-crcys" onclick="switchFormula('crcys')">+ Cistatina C</button>
+            </div>
+
+            <!-- Campos comunes -->
+            <div class="epi-fields">
+              <div class="epi-row epi-row-inline">
+                <label class="epi-label">Sexo</label>
+                <div class="sex-toggle">
+                  <button class="sex-btn active" id="sex-m" onclick="setSex('M')" title="Masculino">&#9794;</button>
+                  <button class="sex-btn" id="sex-f" onclick="setSex('F')" title="Femenino">&#9792;</button>
+                </div>
+              </div>
+              <div class="epi-row">
+                <label class="epi-label" for="epi-age">Edad (años)</label>
+                <input id="epi-age" type="number" min="18" max="110" placeholder="ej. 55" class="epi-input" />
+              </div>
+              <div class="epi-row">
+                <label class="epi-label" for="epi-cr">Creatinina sérica (mg/dL)</label>
+                <input id="epi-cr" type="number" min="0" step="0.01" placeholder="ej. 1.2" class="epi-input" />
+              </div>
+              <!-- Cistatina C — solo en modo cr+cys -->
+              <div class="epi-row" id="row-cys" style="display:none">
+                <label class="epi-label" for="epi-cys">Cistatina C (mg/L)</label>
+                <input id="epi-cys" type="number" min="0" step="0.01" placeholder="ej. 1.1" class="epi-input" />
+              </div>
+            </div>
+
+            <button class="calc-epi-btn" onclick="calcularEPI()">
+              <!-- Kidney SVG icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M8.5 2C5.46 2 3 4.69 3 8c0 2.5 1.2 4.7 3 6v5a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-2.5c.33.03.66.5 1 .5s.67-.47 1-.5V19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5c1.8-1.3 3-3.5 3-6 0-3.31-2.46-6-5.5-6-1.42 0-2.7.53-3.68 1.4A5.44 5.44 0 0 0 8.5 2z"/>
+              </svg>
+              Calcular TFG
+            </button>
+            <p class="epi-note">CKD-EPI 2021 · Sin raza · KDIGO</p>
+          </div>
+        </div>
+
+        <!-- Botón principal calcular -->
+        <button id="calc-btn" class="calc-btn" onclick="calcular()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M8.5 2C5.46 2 3 4.69 3 8c0 2.5 1.2 4.7 3 6v5a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-2.5c.33.03.66.5 1 .5s.67-.47 1-.5V19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-5c1.8-1.3 3-3.5 3-6 0-3.31-2.46-6-5.5-6-1.42 0-2.7.53-3.68 1.4A5.44 5.44 0 0 0 8.5 2z"/>
+          </svg>
+          Calcular
+        </button>
+        <p class="input-hint">Ingresa la TFG manualmente o calcúlala arriba.</p>
+
+        <!-- Panel de resultado TFG + Albuminuria -->
+        <div id="result-panel" class="result-panel hidden">
+          <div id="stage-badge" class="stage-badge"></div>
+          <div class="result-text">
+            <div id="stage-name" class="stage-name"></div>
+            <div id="stage-desc" class="stage-desc"></div>
+          </div>
+          <!-- Albuminuria badge (aparece si se ingresó) -->
+          <div id="alb-result" class="alb-result hidden">
+            <div id="alb-badge" class="alb-badge"></div>
+            <div id="alb-desc" class="alb-desc"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Divisor vertical ── -->
+      <div class="panel-divider"></div>
+
+      <!-- ── Columna derecha: velocímetro ── -->
+      <div class="panel-right">
+        <div class="speedometer-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Velocímetro del Riñón
+        </div>
+        <canvas id="speedometer" width="700" height="420"></canvas>
+      </div>
+
+    </section>
+
+    <!-- STAGES TABLE -->
+    <section class="stages-section">
+      <h2 class="section-title">Estadios de Enfermedad Renal Crónica — KDIGO</h2>
+      <div class="stages-grid" id="stages-grid">
+        <!-- filled by JS -->
+      </div>
+    </section>
+
+    <!-- EXPLANATION -->
+    <section class="explanation-section card">
+      <div class="explanation-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+      </div>
+      <div class="explanation-content">
+        <h3>¿Cómo leer el velocímetro?</h3>
+        <ul>
+          <li><strong>0 ml/min (izquierda)</strong> = Riñón sin función (estadio 5, falla renal).</li>
+          <li><strong>120 ml/min (derecha)</strong> = Riñón funcionando al máximo (estadio 1, normal).</li>
+          <li>La <strong>aguja</strong> te muestra dónde está tu riñón hoy.</li>
+          <li>Cuanto más a la derecha, mejor está funcionando tu riñón.</li>
+          <li><strong>Albuminuria</strong>: A1 (&lt;30 mg/g) = normal · A2 (30-300) = moderada · A3 (&gt;300) = severa.</li>
+        </ul>
+        <p class="disclaimer">Esta herramienta es solo educativa. Siempre consulta a tu nefrólogo para interpretar tus resultados.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Herramienta educativa basada en las guías <strong>KDIGO 2024</strong> · Fórmula <strong>CKD-EPI 2021</strong> · Uso exclusivo educativo</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
