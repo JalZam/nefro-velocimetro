@@ -626,3 +626,218 @@ body {
   .header-inner { flex-wrap: wrap; gap: 0.5rem; }
   .header-link { display: none; }
 }
+
+/* ── RIESGO KDIGO G×A ─────────────────────────────────────── */
+.risk-card {
+  padding: 1.25rem 1.5rem 1.4rem;
+}
+.risk-intro {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.1rem;
+  max-width: 62ch;
+}
+.risk-intro strong { color: var(--dark); }
+
+.risk-table-wrap { overflow-x: auto; }
+
+.risk-table {
+  border-collapse: separate;
+  border-spacing: 4px;
+  width: 100%;
+  min-width: 460px;
+  table-layout: fixed;
+}
+.risk-table th,
+.risk-table td { text-align: center; }
+
+/* Encabezados de columna (A1/A2/A3) */
+.risk-col-head {
+  padding: 0.4rem 0.3rem 0.55rem;
+  font-family: 'Outfit', sans-serif;
+}
+.risk-col-key {
+  display: block;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--dark);
+}
+.risk-col-range {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+/* Esquina + rótulos de eje */
+.risk-corner {
+  width: 118px;
+  padding: 0.3rem;
+  font-size: 0.66rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-align: left;
+}
+.risk-axis-top { display: block; text-align: right; }
+.risk-axis-left { display: block; }
+
+/* Encabezados de fila (G1..G5) */
+.risk-row-head {
+  text-align: left;
+  padding: 0.45rem 0.55rem;
+  border-left: 4px solid var(--row-color, var(--border));
+  background: var(--bg-card2);
+  border-radius: var(--radius-sm);
+}
+.risk-row-key {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--row-color, var(--dark));
+}
+.risk-row-range {
+  display: block;
+  font-size: 0.66rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Celdas de riesgo */
+.risk-cell {
+  position: relative;
+  padding: 0.6rem 0.35rem;
+  border-radius: var(--radius-sm);
+  background: var(--cell-bg);
+  border: 1px solid var(--cell-border);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.risk-cell-name {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--cell-fg);
+  line-height: 1.2;
+}
+.risk-cell-freq {
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--cell-fg);
+  opacity: 0.55;
+}
+
+/* Casilla del paciente */
+.risk-cell.active {
+  box-shadow: 0 0 0 3px var(--cell-fg), var(--shadow-md);
+  transform: scale(1.04);
+  z-index: 2;
+}
+.risk-cell.active .risk-cell-name { font-size: 0.78rem; }
+/* Fila resaltada cuando falta la albuminuria */
+.risk-row.row-active .risk-cell { opacity: 1; }
+.risk-table.has-gfr .risk-row:not(.row-active) .risk-cell { opacity: 0.4; }
+.risk-table.has-gfr .risk-row:not(.row-active) .risk-row-head { opacity: 0.5; }
+
+/* Leyenda */
+.risk-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 1rem;
+}
+.risk-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.risk-legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* Nota dinámica */
+.risk-note {
+  margin-top: 0.9rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.risk-note.filled {
+  background: var(--note-bg, var(--primary-light));
+  border-color: var(--note-border, var(--primary-mid));
+  color: var(--note-fg, var(--dark));
+  font-weight: 500;
+}
+.risk-foot {
+  margin-top: 0.8rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Badge de riesgo en el panel de resultado */
+.risk-result {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+  border-top: 1px dashed var(--border);
+}
+.risk-result.hidden { display: none; }
+.risk-result-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+.risk-result-badge {
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: 1.5px solid currentColor;
+}
+.risk-result-link {
+  font-size: 0.7rem;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+.risk-result-link:hover { text-decoration: underline; }
+
+@media (max-width: 760px) {
+  .risk-card { padding: 1rem 1rem 1.2rem; }
+  .risk-table { min-width: 380px; border-spacing: 3px; }
+  .risk-corner { width: 88px; font-size: 0.6rem; }
+  .risk-cell { padding: 0.5rem 0.2rem; }
+  .risk-cell-name { font-size: 0.66rem; }
+  .risk-row-key { font-size: 0.75rem; }
+}
+
+@media print {
+  .pr-risk-block {
+    font-size: 10pt;
+    margin-bottom: 10pt;
+    padding: 6pt 10pt;
+    border: 0.5pt solid #e2e8f0;
+    border-radius: 4pt;
+  }
+}

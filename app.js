@@ -363,6 +363,7 @@ function calcular() {
   updateResultPanel(gfr);
   highlightStageCard(gfr);
   processAlbuminuria();
+  refreshRisk();
 }
 
 // ── Animar la aguja ───────────────────────────────────────────
@@ -440,6 +441,7 @@ document.getElementById('gfr-input').addEventListener('input', () => {
     highlightStageCard(gfr);
     lastGfr = gfrClamped;
   }
+  refreshRisk();
 });
 
 document.getElementById('alb-input').addEventListener('input', () => {
@@ -447,6 +449,7 @@ document.getElementById('alb-input').addEventListener('input', () => {
   if (!document.getElementById('result-panel').classList.contains('hidden')) {
     processAlbuminuria();
   }
+  refreshRisk();
 });
 
 // ── Inicialización ────────────────────────────────────────────
@@ -766,13 +769,26 @@ function printReport() {
   // Albuminuria
   const albRaw = document.getElementById('alb-input').value.trim();
   const prAlbBlock = document.getElementById('pr-alb-block');
+  const prRiskBlock = document.getElementById('pr-risk-block');
   if (albRaw && !isNaN(parseFloat(albRaw))) {
     const albStage = getAlbStage(parseFloat(albRaw));
     document.getElementById('pr-alb-text').textContent =
       `${parseFloat(albRaw).toFixed(1)} mg/g — ${albStage.label}: ${albStage.name}`;
     prAlbBlock.style.display = 'block';
+
+    // Riesgo combinado G×A (sólo tiene sentido con ambos valores)
+    const riskCell = getRiskCell(gfrParsed, parseFloat(albRaw));
+    if (riskCell) {
+      document.getElementById('pr-risk-text').textContent =
+        `${riskCell.stageKey} + ${riskCell.albKey} — Riesgo ${riskCell.level.name} de progresión · ` +
+        `${riskCell.freq} control(es) de función renal al año`;
+      prRiskBlock.style.display = 'block';
+    } else {
+      prRiskBlock.style.display = 'none';
+    }
   } else {
     prAlbBlock.style.display = 'none';
+    prRiskBlock.style.display = 'none';
   }
 
   window.print();
@@ -794,3 +810,179 @@ function printReport() {
     .catch(() => { el.textContent = '--'; });
 })();
 
+
+// ─────────────────────────────────────────────────────────────
+//  RIESGO KDIGO — Cuadrícula TFG (G) × Albuminuria (A)
+//  Basada en la figura de pronóstico de las guías KDIGO.
+//  El número de cada casilla = controles de función renal por año.
+// ─────────────────────────────────────────────────────────────
+const RISK_LEVELS = {
+  low:      { key:'low',      name:'Bajo',     bg:'#dcfce7', fg:'#166534', border:'#86efac' },
+  moderate: { key:'moderate', name:'Moderado', bg:'#fef9c3', fg:'#854d0e', border:'#fde047' },
+  high:     { key:'high',     name:'Alto',     bg:'#ffedd5', fg:'#9a3412', border:'#fdba74' },
+  veryhigh: { key:'veryhigh', name:'Muy alto', bg:'#fee2e2', fg:'#991b1b', border:'#fca5a5' },
+};
+
+// Columnas en orden A1, A2, A3
+const RISK_MATRIX = {
+  G1:  ['low',      'moderate', 'high'    ],
+  G2:  ['low',      'moderate', 'high'    ],
+  G3a: ['moderate', 'high',     'veryhigh'],
+  G3b: ['high',     'veryhigh', 'veryhigh'],
+  G4:  ['veryhigh', 'veryhigh', 'veryhigh'],
+  G5:  ['veryhigh', 'veryhigh', 'veryhigh'],
+};
+
+// Frecuencia de monitoreo recomendada (veces por año)
+const MONITOR_FREQ = {
+  G1:  [1,   1,   2   ],
+  G2:  [1,   1,   2   ],
+  G3a: [1,   2,   3   ],
+  G3b: [2,   3,   3   ],
+  G4:  [3,   3,   '4+'],
+  G5:  ['4+','4+','4+'],
+};
+
+const RISK_ROW_ORDER = ['G1', 'G2', 'G3a', 'G3b', 'G4', 'G5'];
+
+// Devuelve la casilla (estadio, albuminuria, nivel, frecuencia) o null
+function getRiskCell(gfr, acr) {
+  const stage = getStage(gfr);
+  if (!stage || isNaN(acr)) return null;
+  const albStage = getAlbStage(acr);
+  const col = ALB_STAGES.indexOf(albStage);
+  if (col < 0 || !RISK_MATRIX[stage.key]) return null;
+  return {
+    stageKey: stage.key,
+    albKey:   albStage.key,
+    level:    RISK_LEVELS[RISK_MATRIX[stage.key][col]],
+    freq:     MONITOR_FREQ[stage.key][col],
+    col:      col,
+  };
+}
+
+// ── Construir la cuadrícula ───────────────────────────────────
+function buildRiskTable() {
+  const table = document.getElementById('risk-table');
+  if (!table) return;
+
+  const stageByKey = {};
+  STAGES.forEach(s => { stageByKey[s.key] = s; });
+
+  let html = '<thead><tr>' +
+    '<th class="risk-corner" scope="col">' +
+      '<span class="risk-axis-top">Albuminuria (uACR) →</span>' +
+      '<span class="risk-axis-left">↓ TFG</span>' +
+    '</th>';
+
+  ALB_STAGES.forEach(a => {
+    html += `<th class="risk-col-head" scope="col">
+               <span class="risk-col-key">${a.label}</span>
+               <span class="risk-col-range">${a.range}</span>
+             </th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  RISK_ROW_ORDER.forEach(key => {
+    const st = stageByKey[key];
+    html += `<tr class="risk-row" id="risk-row-${key}">
+               <th class="risk-row-head" scope="row" style="--row-color:${st.color}">
+                 <span class="risk-row-key">${key}</span>
+                 <span class="risk-row-range">${st.range} mL/min</span>
+               </th>`;
+    RISK_MATRIX[key].forEach((lvlKey, i) => {
+      const lvl = RISK_LEVELS[lvlKey];
+      const alb = ALB_STAGES[i];
+      html += `<td class="risk-cell" id="risk-${key}-${alb.key}"
+                   style="--cell-bg:${lvl.bg}; --cell-fg:${lvl.fg}; --cell-border:${lvl.border}"
+                   title="${key} + ${alb.key}: riesgo ${lvl.name} · ${MONITOR_FREQ[key][i]} control(es) al año">
+                 <span class="risk-cell-freq">${MONITOR_FREQ[key][i]}</span>
+                 <span class="risk-cell-name">${lvl.name}</span>
+               </td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+
+  table.innerHTML = html;
+  buildRiskLegend();
+}
+
+function buildRiskLegend() {
+  const legend = document.getElementById('risk-legend');
+  if (!legend) return;
+  legend.innerHTML = ['low', 'moderate', 'high', 'veryhigh'].map(k => {
+    const l = RISK_LEVELS[k];
+    return `<span class="risk-legend-item">
+              <span class="risk-legend-swatch" style="background:${l.bg}; border:1px solid ${l.border}"></span>
+              Riesgo ${l.name.toLowerCase()}
+            </span>`;
+  }).join('') +
+  `<span class="risk-legend-item">
+     <span class="risk-legend-swatch" style="background:transparent; border:1px dashed var(--text-muted)"></span>
+     Nº = controles al año
+   </span>`;
+}
+
+// ── Resaltar la casilla del paciente ──────────────────────────
+function refreshRisk() {
+  const table = document.getElementById('risk-table');
+  const note  = document.getElementById('risk-note');
+  const res   = document.getElementById('risk-result');
+  if (!table || !note || !res) return;
+
+  // Limpiar estado previo
+  table.querySelectorAll('.risk-cell').forEach(c => c.classList.remove('active'));
+  table.querySelectorAll('.risk-row').forEach(r => r.classList.remove('row-active'));
+  table.classList.remove('has-gfr');
+  note.classList.remove('filled');
+  res.classList.add('hidden');
+
+  const gfrRaw = document.getElementById('gfr-input').value.trim();
+  const albRaw = document.getElementById('alb-input').value.trim();
+  const gfr = parseFloat(gfrRaw);
+  const acr = parseFloat(albRaw);
+  const hasGfr = gfrRaw !== '' && !isNaN(gfr) && gfr >= 0;
+  const hasAcr = albRaw !== '' && !isNaN(acr) && acr >= 0;
+
+  if (!hasGfr) {
+    note.textContent = 'Ingresa tu TFG y tu albuminuria para ubicar tu casilla.';
+    return;
+  }
+
+  const stage = getStage(gfr);
+  if (!stage) return;
+
+  table.classList.add('has-gfr');
+  const row = document.getElementById(`risk-row-${stage.key}`);
+  if (row) row.classList.add('row-active');
+
+  if (!hasAcr) {
+    note.textContent = `Tu TFG te ubica en la fila ${stage.key}. Falta la albuminuria (uACR) para saber en cuál de las tres casillas estás: dentro de una misma fila el riesgo cambia mucho entre A1 y A3.`;
+    return;
+  }
+
+  const cell = getRiskCell(gfr, acr);
+  if (!cell) return;
+
+  const td = document.getElementById(`risk-${cell.stageKey}-${cell.albKey}`);
+  if (td) td.classList.add('active');
+
+  note.classList.add('filled');
+  note.style.setProperty('--note-bg',     cell.level.bg);
+  note.style.setProperty('--note-border', cell.level.border);
+  note.style.setProperty('--note-fg',     cell.level.fg);
+  note.innerHTML = `Tu casilla es <strong>${cell.stageKey} + ${cell.albKey}</strong> → riesgo ` +
+                   `<strong>${cell.level.name.toLowerCase()}</strong> de progresión renal. ` +
+                   `Controles de función renal sugeridos: <strong>${cell.freq} al año</strong>.`;
+
+  const badge = document.getElementById('risk-result-badge');
+  badge.textContent      = cell.level.name;
+  badge.style.color      = cell.level.fg;
+  badge.style.background = cell.level.bg;
+  res.classList.remove('hidden');
+}
+
+// ── Inicializar cuadrícula ────────────────────────────────────
+buildRiskTable();
+refreshRisk();

@@ -148,6 +148,12 @@
             <div id="alb-badge" class="alb-badge"></div>
             <div id="alb-desc" class="alb-desc"></div>
           </div>
+          <!-- Riesgo combinado KDIGO (aparece con TFG + albuminuria) -->
+          <div id="risk-result" class="risk-result hidden">
+            <span class="risk-result-label">Riesgo KDIGO</span>
+            <span id="risk-result-badge" class="risk-result-badge"></span>
+            <a href="#riesgo" class="risk-result-link">ver cuadrícula ↓</a>
+          </div>
           <!-- Botón imprimir -->
           <button class="print-btn" onclick="printReport()" title="Imprimir / Guardar PDF">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
@@ -176,6 +182,32 @@
       <h2 class="section-title">Estadios de Enfermedad Renal Crónica — KDIGO</h2>
       <div class="stages-grid" id="stages-grid">
         <!-- filled by JS -->
+      </div>
+    </section>
+
+    <!-- RIESGO KDIGO G×A -->
+    <section class="risk-section" id="riesgo">
+      <h2 class="section-title">Riesgo de progresión — Cuadrícula KDIGO (TFG × Albuminuria)</h2>
+      <div class="risk-card card">
+        <p class="risk-intro">
+          El pronóstico del riñón no depende solo de la TFG: la <strong>albuminuria</strong> pesa igual.
+          Busca la casilla donde se cruzan tus dos valores — ahí está tu nivel de riesgo.
+        </p>
+
+        <div class="risk-table-wrap">
+          <table class="risk-table" id="risk-table">
+            <!-- generada por app.js -->
+          </table>
+        </div>
+
+        <div class="risk-legend" id="risk-legend"><!-- generada por app.js --></div>
+
+        <p class="risk-note" id="risk-note">Ingresa tu TFG y tu albuminuria para ubicar tu casilla.</p>
+
+        <p class="risk-foot">
+          El número pequeño de cada casilla es la cantidad de controles de función renal recomendados al año.
+          G1 y G2 con A1 solo se consideran enfermedad renal crónica si existe otro marcador de daño renal.
+        </p>
       </div>
     </section>
 
@@ -224,6 +256,12 @@
     <div id="pr-alb-block" style="display:none" class="pr-alb-block">
       <span class="pr-alb-label">Albuminuria (uACR):</span>
       <span id="pr-alb-text"></span>
+    </div>
+
+    <!-- Riesgo combinado (sólo si hay TFG + albuminuria) -->
+    <div id="pr-risk-block" style="display:none" class="pr-risk-block">
+      <span class="pr-alb-label">Riesgo KDIGO (TFG × albuminuria):</span>
+      <span id="pr-risk-text"></span>
     </div>
 
     <!-- Descripción clínica -->
