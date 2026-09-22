@@ -791,24 +791,27 @@ function printReport() {
     prRiskBlock.style.display = 'none';
   }
 
-  window.print();
+  // La imagen del velocimetro es un data URL y el navegador la decodifica de
+  // forma asincrona. Si llamamos a print() de una vez, el dialogo se abre
+  // antes de que la imagen exista y la hoja sale sin el velocimetro.
+  const speedoImg = document.getElementById('pr-speedometer-img');
+  const doPrint = () => window.print();
+
+  if (speedoImg.complete && speedoImg.naturalWidth > 0) {
+    doPrint();
+  } else if (typeof speedoImg.decode === 'function') {
+    speedoImg.decode().then(doPrint).catch(doPrint);
+  } else {
+    speedoImg.onload  = doPrint;
+    speedoImg.onerror = doPrint;
+  }
 }
 
 // ─────────────────────────────────────────────────────────────
 // CONTADOR DE VISITAS
 // ─────────────────────────────────────────────────────────────
-(function loadVisitCount() {
-  const el = document.getElementById('visit-count');
-  if (!el) return;
-  fetch('https://api.counterapi.dev/v1/jalzam-nefro-velocimetro/visits/up')
-    .then(r => r.json())
-    .then(data => {
-      if (data && data.count != null) {
-        el.textContent = Number(data.count).toLocaleString();
-      } else { el.textContent = '--'; }
-    })
-    .catch(() => { el.textContent = '--'; });
-})();
+// El contador ahora es un badge servido por hits.sh (ver index.html).
+// La API anterior (counterapi.dev v1) fue descontinuada: devuelve HTTP 410.
 
 
 // ─────────────────────────────────────────────────────────────

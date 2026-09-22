@@ -108,6 +108,12 @@ body {
   color: var(--text-muted);
   font-weight: 500;
 }
+.visit-badge {
+  height: 15px;
+  width: auto;
+  display: block;
+  border-radius: 3px;
+}
 .btn-reset {
   display: inline-flex;
   align-items: center;
