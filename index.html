@@ -155,6 +155,11 @@
             <span id="risk-result-badge" class="risk-result-badge"></span>
             <a href="#riesgo" class="risk-result-link">ver cuadrícula ↓</a>
           </div>
+          <!-- Datos opcionales para la hoja impresa -->
+          <div class="print-names">
+            <input type="text" id="patient-name" class="name-input" placeholder="Nombre del paciente (opcional)" autocomplete="off" maxlength="80" />
+            <input type="text" id="doctor-name" class="name-input" placeholder="Médico (opcional)" autocomplete="off" maxlength="80" />
+          </div>
           <!-- Botón imprimir -->
           <button class="print-btn" onclick="printReport()" title="Imprimir / Guardar PDF">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
@@ -230,8 +235,8 @@
       </div>
     </section>
     <!-- REFERENCIAS -->
-    <section class="refs-section card" id="referencias">
-      <h2 class="section-title">Referencias</h2>
+    <section class="refs-section" id="referencias">
+      <h2 class="refs-title">Referencias</h2>
       <p class="refs-intro">
         Los estadios, los umbrales de albuminuria, la cuadrícula de riesgo y la fórmula de cálculo
         provienen directamente de estas dos fuentes.
@@ -264,6 +269,11 @@
     </div>
 
     <h2 class="pr-title">Resultado de Función Renal</h2>
+
+    <div class="pr-names">
+      <div class="pr-name-row"><span class="pr-name-label">Paciente:</span> <span id="pr-patient" class="pr-name-value"></span></div>
+      <div class="pr-name-row"><span class="pr-name-label">Médico:</span> <span id="pr-doctor" class="pr-name-value"></span></div>
+    </div>
 
     <!-- Valor principal -->
     <div class="pr-value-block">
@@ -299,6 +309,10 @@
   </div>
 
   <footer class="site-footer">
+    <p class="pro-notice">
+      <strong>Herramienta de uso profesional.</strong> Diseñada para apoyar la explicación al paciente
+      por parte de personal de salud. Los resultados deben ser interpretados por un médico.
+    </p>
     <p>Herramienta educativa basada en las guías <strong>KDIGO 2024</strong> · Fórmula <strong>CKD-EPI 2021</strong> · Uso exclusivo educativo</p>
 
     <details class="privacy">

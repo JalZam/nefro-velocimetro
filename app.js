@@ -752,6 +752,12 @@ function printReport() {
   });
   document.getElementById('pr-date').textContent = dateStr;
 
+  // Nombres opcionales: si vienen vacíos, la línea queda en blanco para escribir a mano
+  document.getElementById('pr-patient').textContent =
+    document.getElementById('patient-name').value.trim();
+  document.getElementById('pr-doctor').textContent =
+    document.getElementById('doctor-name').value.trim();
+
   // TFG
   document.getElementById('pr-tfg').textContent = gfrParsed.toFixed(1);
 
