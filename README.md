@@ -25,7 +25,8 @@ Responsable del sitio: **CiMedical**.
 Todo el cálculo ocurre en el navegador. Los valores clínicos no se envían a ningún servidor,
 no se guardan y desaparecen al recargar. No hay cookies, almacenamiento local, publicidad ni
 rastreo. Al cargar la página, la IP del visitante es visible para GitHub Pages (alojamiento),
-Google Fonts (tipografías) y hits.sh (contador de visitas). Detalle en el desplegable
+Google Fonts (tipografías), hits.sh (contador de visitas) y GoatCounter (analítica sin cookies
+ni IP; servidores en la UE; panel en https://velocimetrorenal.goatcounter.com). Detalle en el desplegable
 "Política de uso de datos" de la propia página. Marco: Ley 1581 de 2012 (Colombia).
 
 ## Referencias
@@ -60,6 +61,7 @@ en el navegador para probar en local.
   - `CNAME _domainconnect` → intacto (servicio interno de GoDaddy)
 - HTTPS forzado; certificado Let's Encrypt emitido y renovado por GitHub.
 - `https://jalzam.github.io/nefro-velocimetro/` redirige al dominio.
+- Analítica: GoatCounter (`gc.zgo.at/count.js`), visitas únicas por sesión de 8 h, sin cookies.
 - Contador de visitas: badge de `hits.sh` con clave `velocimetrorenal.com` (gratis, sin
   cuenta ni API key; sin CORS, por eso va como `<img>`). Reemplazó a counterapi.dev v1,
   descontinuada (HTTP 410).
