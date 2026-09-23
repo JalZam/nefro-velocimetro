@@ -577,6 +577,80 @@ body {
 }
 .site-footer strong { color: var(--text-secondary); }
 
+/* ── REFERENCIAS ──────────────────────────────────────────── */
+.refs-section { margin-top: 1.5rem; }
+.refs-intro {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+.refs-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.refs-list li {
+  font-size: 0.84rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.ref-tag {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #2563eb;
+  margin-bottom: 0.2rem;
+}
+.refs-list em { color: var(--text-primary); font-style: italic; }
+.refs-list a {
+  display: inline-block;
+  margin-top: 0.15rem;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  word-break: break-word;
+}
+.refs-list a:hover { text-decoration: underline; }
+
+/* ── POLÍTICA DE DATOS ────────────────────────────────────── */
+.privacy {
+  max-width: 720px;
+  margin: 1rem auto 0;
+  text-align: left;
+}
+.privacy summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #2563eb;
+  text-align: center;
+  list-style: none;
+  padding: 0.4rem;
+}
+.privacy summary::-webkit-details-marker { display: none; }
+.privacy summary::before { content: '\25B8  '; }
+.privacy[open] summary::before { content: '\25BE  '; }
+.privacy-body {
+  margin-top: 0.75rem;
+  padding: 1rem 1.15rem;
+  background: var(--bg, #f8fafc);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  line-height: 1.65;
+}
+.privacy-body p { margin: 0 0 0.7rem; }
+.privacy-body ul { margin: 0 0 0.7rem; padding-left: 1.2rem; }
+.privacy-body li { margin-bottom: 0.25rem; }
+.privacy-legal {
+  margin-top: 0.9rem !important;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.72rem;
+}
+
 /* ── PRINT ONLY ───────────────────────────────────────────── */
 .print-only { display: none !important; }
 
