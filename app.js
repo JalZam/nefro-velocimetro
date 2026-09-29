@@ -348,7 +348,8 @@ function highlightStageCard(gfr) {
 }
 
 // ── Función principal de cálculo ─────────────────────────────
-function calcular() {
+// origen: 'tfg-directa' (botón/Enter), 'ckd-epi' (fórmula) o null (tarjetas de ejemplo, no se cuenta)
+function calcular(origen = 'tfg-directa') {
   const input = document.getElementById('gfr-input');
   const raw   = input.value.trim();
   if (raw === '' || isNaN(parseFloat(raw))) {
@@ -357,6 +358,7 @@ function calcular() {
   }
   const gfr = Math.max(0, Math.min(200, parseFloat(raw)));
   const gfrClamped = Math.min(gfr, 120); // clamp for gauge
+  registrarCalculo(origen);
 
   animateNeedle(lastGfr, gfrClamped, 800);
   lastGfr = gfrClamped;
@@ -364,6 +366,21 @@ function calcular() {
   highlightStageCard(gfr);
   processAlbuminuria();
   refreshRisk();
+}
+
+// ── Evento de uso (GoatCounter, sin cookies) ──────────────────
+// Solo se envía el nombre del evento: nunca la TFG ni los valores clínicos.
+// Eventos: calculo/tfg-directa (TFG escrita a mano) · calculo/ckd-epi (fórmula).
+function registrarCalculo(origen) {
+  if (!origen) return;
+  if (!window.goatcounter || typeof window.goatcounter.count !== 'function') return;
+  try {
+    window.goatcounter.count({
+      path:  'calculo/' + origen,
+      title: origen === 'ckd-epi' ? 'Cálculo TFG por CKD-EPI' : 'Cálculo TFG directa',
+      event: true,
+    });
+  } catch (e) { /* la analítica nunca debe romper la herramienta */ }
 }
 
 // ── Animar la aguja ───────────────────────────────────────────
@@ -419,7 +436,7 @@ function buildStagesGrid() {
     card.addEventListener('click', () => {
       const mid = stage.min + (stage.max - stage.min) / 2;
       document.getElementById('gfr-input').value = Math.round(mid);
-      calcular();
+      calcular(null);
     });
     grid.appendChild(card);
   });
@@ -583,7 +600,7 @@ function calcularEPI() {
   gfrInput.style.boxShadow = '0 0 0 4px rgba(56,189,248,.2)';
   setTimeout(() => { gfrInput.style.borderColor = ''; gfrInput.style.boxShadow = ''; }, 1200);
 
-  calcular();
+  calcular('ckd-epi');
 
   // Cerrar acordeón
   const body = document.getElementById('accordion-body');
