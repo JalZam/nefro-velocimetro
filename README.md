@@ -66,6 +66,11 @@ en el navegador para probar en local.
     `calculo/ckd-epi` (fórmula), con `no_session: true` para contar cada cálculo y no uno por
     sesión. Solo viaja el nombre del evento, nunca los valores. Las tarjetas de
     ejemplo de etapa no cuentan. En el panel de GoatCounter aparecen bajo "Events".
+  - Contador visible de cálculos en la cabecera (`cargarContadorCalculos()`): lee
+    `https://velocimetrorenal.goatcounter.com/counter/<evento>.json` (endpoint público de GoatCounter,
+    CORS abierto; exige la casilla "Allow adding visitor counts on your website" en Settings → Site
+    settings) y muestra la suma de los dos eventos; el desglose va en el tooltip. Empieza a contar
+    desde el 2026-09-29.
 - Contador de visitas: badge de `hits.sh` con clave `velocimetrorenal.com` (gratis, sin
   cuenta ni API key; sin CORS, por eso va como `<img>`). Reemplazó a counterapi.dev v1,
   descontinuada (HTTP 410).
