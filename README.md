@@ -63,7 +63,8 @@ en el navegador para probar en local.
 - `https://jalzam.github.io/nefro-velocimetro/` redirige al dominio.
 - Analítica: GoatCounter (`gc.zgo.at/count.js`), visitas únicas por sesión de 8 h, sin cookies.
   - Eventos de uso (`registrarCalculo()` en `app.js`): `calculo/tfg-directa` (botón o Enter) y
-    `calculo/ckd-epi` (fórmula). Solo viaja el nombre del evento, nunca los valores. Las tarjetas de
+    `calculo/ckd-epi` (fórmula), con `no_session: true` para contar cada cálculo y no uno por
+    sesión. Solo viaja el nombre del evento, nunca los valores. Las tarjetas de
     ejemplo de etapa no cuentan. En el panel de GoatCounter aparecen bajo "Events".
 - Contador de visitas: badge de `hits.sh` con clave `velocimetrorenal.com` (gratis, sin
   cuenta ni API key; sin CORS, por eso va como `<img>`). Reemplazó a counterapi.dev v1,

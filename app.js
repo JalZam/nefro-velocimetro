@@ -379,6 +379,7 @@ function registrarCalculo(origen) {
       path:  'calculo/' + origen,
       title: origen === 'ckd-epi' ? 'Cálculo TFG por CKD-EPI' : 'Cálculo TFG directa',
       event: true,
+      no_session: true,   // contar cada cálculo, no uno por sesión de 8 h
     });
   } catch (e) { /* la analítica nunca debe romper la herramienta */ }
 }
