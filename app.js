@@ -384,27 +384,6 @@ function registrarCalculo(origen) {
   } catch (e) { /* la analítica nunca debe romper la herramienta */ }
 }
 
-// ── Contador de cálculos en la cabecera ───────────────────────
-// Lee el endpoint público de GoatCounter (/counter/<ruta>.json) para los dos
-// eventos y muestra la suma. Si algo falla, el contador simplemente no aparece.
-function cargarContadorCalculos() {
-  const base = 'https://velocimetrorenal.goatcounter.com/counter/';
-  const rutas = ['calculo/tfg-directa', 'calculo/ckd-epi'];
-  const leer = ruta => fetch(base + ruta + '.json', { cache: 'no-store' })
-    .then(r => r.json())                      // 404 = ruta aún sin eventos, trae count "0"
-    .then(j => parseInt(String(j.count || '0').replace(/\D/g, ''), 10) || 0)
-    .catch(() => 0);
-  Promise.all(rutas.map(leer)).then(([directa, epi]) => {
-    const total = directa + epi;
-    const el = document.getElementById('calc-counter');
-    if (!el) return;
-    document.getElementById('calc-count').textContent = total.toLocaleString('es-CO');
-    el.title = `TFG directa: ${directa.toLocaleString('es-CO')} · CKD-EPI: ${epi.toLocaleString('es-CO')}`;
-    el.hidden = false;
-  });
-}
-cargarContadorCalculos();
-
 // ── Animar la aguja ───────────────────────────────────────────
 let lastGfr = null;
 let animFrame = null;
