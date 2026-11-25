@@ -1,0 +1,20 @@
+# Velocímetro Renal
+
+> Free Spanish-language web tool for clinicians to explain kidney function to a patient during the visit. It shows the glomerular filtration rate (GFR, "TFG" in Spanish) as the needle of a speedometer over the KDIGO stages G1–G5, estimates GFR with the CKD-EPI 2021 equations (creatinine, or creatinine plus cystatin C, without race), classifies albuminuria (A1–A3 by urine albumin-to-creatinine ratio) and places the patient on the KDIGO 2024 risk grid (GFR × albuminuria) with the recommended number of check-ups per year. It also prints a one-page summary for the patient. Written by Juan José Jaller, MD, nephrologist; site owner CiMedical (Colombia). No advertising, no cookies; the clinical values never leave the browser. It supports the consultation and is not a self-diagnosis tool.
+
+Herramienta web gratuita, en español, para que el médico explique al paciente su función renal: velocímetro de TFG sobre los estadios G1 a G5, cálculo con CKD-EPI 2021, albuminuria A1 a A3 y cuadrícula de riesgo KDIGO 2024.
+
+The calculator needs JavaScript. The text guide below contains the full explanation as plain HTML and is the best page to read or cite.
+
+## Text guide (full content, no JavaScript needed)
+
+- [TFG, albuminuria y riesgo KDIGO: explicación en texto](https://velocimetrorenal.com/tfg-enfermedad-renal-cronica.html): what GFR is, the two CKD-EPI 2021 equations with their coefficients and worked examples, the G1–G5 stages, the A1–A3 albuminuria categories, the full KDIGO risk grid with check-ups per year, how to use the tool in the consultation, frequently asked questions and references.
+
+## Interactive tool
+
+- [Velocímetro Renal](https://velocimetrorenal.com/): the calculator, the speedometer, the risk grid and the printable patient sheet.
+
+## Sources
+
+- KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease. Kidney Int. 2024;105(4S):S117–S314.
+- Inker LA, et al. New creatinine- and cystatin C–based equations to estimate GFR without race. N Engl J Med. 2021;385(19):1737–1749. doi:10.1056/NEJMoa2102953

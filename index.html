@@ -3,14 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Velocímetro Renal — TFG (Tasa de Filtración Glomerular)</title>
-  <meta name="description" content="Herramienta para profesionales de la salud: explique a su paciente la función renal (TFG, CKD-EPI 2021) y el riesgo de progresión según KDIGO 2024." />
+  <title>Velocímetro Renal — Calculadora de TFG (CKD-EPI 2021) y riesgo KDIGO para explicar al paciente</title>
+  <meta name="description" content="Herramienta gratuita para profesionales de la salud: explique a su paciente la función renal con un velocímetro de TFG, calcule la TFG con CKD-EPI 2021 (creatinina y cistatina C), clasifique la albuminuria y ubique el riesgo de progresión en la cuadrícula KDIGO 2024." />
   <link rel="canonical" href="https://velocimetrorenal.com/" />
   <meta name="google-site-verification" content="ZKMQDfX7R3BEnIOVSvXn81xm-n28BHSThDyJsy32aG8" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Velocímetro Renal" />
+  <meta property="og:title" content="Velocímetro Renal — Calculadora de TFG (CKD-EPI 2021) y riesgo KDIGO para explicar al paciente" />
+  <meta property="og:description" content="Herramienta gratuita para profesionales de la salud: explique a su paciente la función renal con un velocímetro de TFG, calcule la TFG con CKD-EPI 2021 (creatinina y cistatina C), clasifique la albuminuria y ubique el riesgo de progresión en la cuadrícula KDIGO 2024." />
+  <meta property="og:url" content="https://velocimetrorenal.com/" />
+  <meta property="og:locale" content="es_CO" />
+  <meta property="og:image" content="https://velocimetrorenal.com/img/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="img/icono.svg" type="image/svg+xml" />
+  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "WebSite", "@id": "https://velocimetrorenal.com/#sitio", "name": "Velocímetro Renal", "url": "https://velocimetrorenal.com/", "inLanguage": "es", "description": "Herramienta para que el médico explique al paciente su función renal (TFG) y su riesgo de progresión de enfermedad renal crónica según KDIGO.", "author": {"@type": "Person", "name": "Juan José Jaller", "jobTitle": "Médico nefrólogo"}, "publisher": {"@type": "Organization", "name": "CiMedical"}}, {"@context": "https://schema.org", "@type": ["WebApplication", "MedicalWebPage"], "name": "Velocímetro Renal: calculadora de TFG y riesgo KDIGO", "url": "https://velocimetrorenal.com/", "description": "Herramienta gratuita para profesionales de la salud: explique a su paciente la función renal con un velocímetro de TFG, calcule la TFG con CKD-EPI 2021 (creatinina y cistatina C), clasifique la albuminuria y ubique el riesgo de progresión en la cuadrícula KDIGO 2024.", "inLanguage": "es", "applicationCategory": "HealthApplication", "operatingSystem": "Any", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "featureList": ["Velocímetro de TFG sobre los estadios G1 a G5 de KDIGO", "Cálculo de TFG con CKD-EPI 2021 (creatinina, o creatinina y cistatina C), sin variable de raza", "Clasificación de albuminuria A1, A2 y A3 por uACR", "Cuadrícula de riesgo KDIGO (TFG × albuminuria) con frecuencia de control anual", "Hoja imprimible para el paciente"], "audience": {"@type": "MedicalAudience", "audienceType": "Clinician"}, "about": [{"@type": "MedicalCondition", "name": "Enfermedad renal crónica", "alternateName": "Chronic kidney disease"}, {"@type": "MedicalTest", "name": "Tasa de filtración glomerular estimada", "alternateName": ["TFG", "eGFR", "CKD-EPI 2021"]}], "author": {"@type": "Person", "name": "Juan José Jaller", "jobTitle": "Médico nefrólogo"}, "isPartOf": {"@id": "https://velocimetrorenal.com/#sitio"}, "image": "https://velocimetrorenal.com/img/og.png", "subjectOf": [{"@type": "WebPage", "url": "https://velocimetrorenal.com/tfg-enfermedad-renal-cronica.html", "inLanguage": "es"}], "citation": ["KDIGO CKD Work Group. KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease. Kidney Int. 2024;105(4S):S117-S314.", "Inker LA, Eneanya ND, Coresh J, et al. New creatinine- and cystatin C-based equations to estimate GFR without race. N Engl J Med. 2021;385(19):1737-1749. doi:10.1056/NEJMoa2102953"]}]</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=2" />
 </head>
 <body>
 
@@ -27,6 +39,7 @@
         </div>
       </div>
       <div class="header-right">
+        <a href="tfg-enfermedad-renal-cronica.html" class="header-link header-info" title="Explicación en texto: TFG, CKD-EPI 2021, estadios, albuminuria y riesgo KDIGO">Más información</a>
         <a href="https://kdigo.org/guidelines/ckd-evaluation-and-management/" target="_blank" rel="noopener" class="header-link">Guías KDIGO 2024 ↗</a>
         <div class="visit-counter">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -234,6 +247,7 @@
           <li>Al final, <strong>“Imprimir hoja para paciente”</strong> genera un resumen en blanco y negro para entregar, con espacio opcional para su nombre y el del médico.</li>
         </ul>
         <p class="disclaimer">Herramienta de apoyo para la consulta. La interpretación corresponde al médico tratante.</p>
+        <p class="pie-guia"><a href="tfg-enfermedad-renal-cronica.html">Más información: leer toda la explicación en texto →</a></p>
       </div>
     </section>
     <!-- REFERENCIAS -->

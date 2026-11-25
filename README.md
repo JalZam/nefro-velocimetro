@@ -41,14 +41,37 @@ ni IP; servidores en la UE; panel en https://velocimetrorenal.goatcounter.com). 
 ## Estructura
 
 ```
-index.html   estructura y textos (incluye la sección oculta para impresión)
-style.css    estilos de pantalla y @media print
+index.html   la calculadora: estructura y textos (incluye la sección oculta para impresión)
+style.css    estilos de pantalla, de la guía en texto y @media print
 app.js       cálculo CKD-EPI, velocímetro (canvas), cuadrícula KDIGO, impresión
+tfg-enfermedad-renal-cronica.html
+             guía en texto («Más información») — GENERADA, no editar a mano
+tools/generar-guia.js   genera la guía leyendo estadios, albuminuria, cuadrícula y fórmulas de app.js
+robots.txt · sitemap.xml · llms.txt   para buscadores y asistentes de IA
+img/og.png · img/icono.svg            vista previa al compartir e icono de pestaña
+qr/          códigos QR del dominio para presentaciones
 CNAME        dominio personalizado para GitHub Pages
 ```
 
 Sin framework, sin dependencias ni paso de compilación. Se abre directamente `index.html`
 en el navegador para probar en local.
+
+## Buscadores y asistentes de IA
+
+- **Guía en texto** (`tfg-enfermedad-renal-cronica.html`): qué es la TFG, las dos ecuaciones CKD-EPI 2021
+  con coeficientes y ejemplos, estadios G1–G5, albuminuria A1–A3, la cuadrícula de riesgo completa, uso en
+  consulta, preguntas frecuentes y referencias. Se llega por el botón **«📖 Más información»** de la cabecera
+  y por un enlace bajo «¿Cómo usar esta herramienta en consulta?».
+- La guía **se genera**: `node tools/generar-guia.js`. Lee los datos de `app.js`, así que nunca dice algo
+  distinto de la calculadora. **Correrlo cada vez que cambien rangos, textos de estadios o fórmulas en `app.js`.**
+  Los textos fijos de la guía (introducciones, preguntas frecuentes) están dentro del propio generador.
+- Cada página lleva canónica, Open Graph (`img/og.png`, 1200×630), icono y datos estructurados JSON-LD
+  (`WebSite` + `WebApplication`/`MedicalWebPage` en la calculadora; `MedicalWebPage` + `FAQPage` en la guía).
+- `robots.txt` permite todos los buscadores y, de forma explícita, los robots de IA. `sitemap.xml` lista las
+  dos páginas (actualizar `lastmod` y añadir páginas nuevas). `llms.txt` es el resumen para asistentes de IA.
+- Google Search Console: la etiqueta `google-site-verification` de `index.html` es la que verifica la
+  propiedad. **No borrar esa línea.**
+- `style.css` se enlaza con `?v=N`; subir el número cuando cambie, para que el navegador no sirva la copia vieja.
 
 ## Publicación
 
@@ -86,8 +109,16 @@ en el navegador para probar en local.
   espera `img.decode()`). Contador migrado a hits.sh.
 - **2026-09-23** — Dominio `velocimetrorenal.com` conectado con HTTPS. Referencias
   bibliográficas y política de uso de datos. Textos alineados al uso médico en consulta.
-  Campos opcionales paciente/médico en la hoja impresa. QR del dominio para presentaciones.
+  Campos opcionales paciente/médico en la hoja impresa. QR del dominio para presentaciones. Analítica GoatCounter.
+- **2026-09-29** — Eventos de uso en GoatCounter (cálculo directo y CKD-EPI, sin valores).
+- **2026-10-02** — Se probó y se quitó un contador visible de cálculos en la cabecera (el dato público de
+  GoatCounter llega con 4 a 8 horas de atraso).
+- **2026-11-25** — Buscadores y asistentes de IA: guía en texto con botón «Más información», etiquetas para
+  redes, datos estructurados, `robots.txt`, `sitemap.xml`, `llms.txt`, imagen de vista previa e icono.
 
 ## Pendiente
 
 - Aviso al usuario cuando pulsa Imprimir sin haber ingresado la TFG (hoy el botón no hace nada).
+- El evento `calculo/tfg-directa` cuenta de menos: el resultado aparece al teclear y casi nadie pulsa el botón.
+- Decidir si se reemplaza el contador `hits.sh` (cuenta cargas de página, no visitantes).
+- Guía en texto solo en español; no hay versión en inglés.
