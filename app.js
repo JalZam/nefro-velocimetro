@@ -281,7 +281,7 @@ function drawSpeedometer(gfr = null) {
     ctx.font         = '14px Inter, sans-serif';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('Ingresa tu TFG para ver el resultado', cx, valueY + 14);
+    ctx.fillText(tr('Ingresa tu TFG para ver el resultado', 'Enter your GFR to see the result'), cx, valueY + 14);
   }
 
   // ── 8. Etiquetas de extremos (debajo de los extremos del diámetro) ──
@@ -290,13 +290,13 @@ function drawSpeedometer(gfr = null) {
   ctx.font         = 'bold 9.5px Inter, sans-serif';
   ctx.textAlign    = 'center';
   ctx.textBaseline = 'top';
-  ctx.fillText('FALLA', cx - R, cy + 8);
-  ctx.fillText('RENAL', cx - R, cy + 20);
+  ctx.fillText(tr('FALLA', 'KIDNEY'), cx - R, cy + 8);
+  ctx.fillText(tr('RENAL', 'FAILURE'), cx - R, cy + 20);
 
   // Derecha: NORMAL / ALTA
   ctx.fillStyle = 'rgba(34,197,94,0.92)';
   ctx.fillText('NORMAL', cx + R, cy + 8);
-  ctx.fillText('/ ALTA',  cx + R, cy + 20);
+  ctx.fillText(tr('/ ALTA', '/ HIGH'),  cx + R, cy + 20);
 }
 
 // ── Obtener estadio por valor de GFR ─────────────────────────
@@ -327,7 +327,7 @@ function updateResultPanel(gfr) {
   name.textContent = `${stage.label} — ${stage.name}`;
   name.style.color = stage.color;
 
-  desc.innerHTML = `<strong>TFG: ${Math.round(gfr)} mL/min/1.73 m²</strong> &nbsp;·&nbsp; Rango: ${stage.range} mL/min/1.73 m²<br>${stage.description}`;
+  desc.innerHTML = `<strong>${tr('TFG', 'GFR')}: ${Math.round(gfr)} mL/min/1.73 m²</strong> &nbsp;·&nbsp; ${tr('Rango', 'Range')}: ${stage.range} mL/min/1.73 m²<br>${stage.description}`;
 
   panel.classList.remove('hidden');
   panel.style.borderColor = stage.color + '55';
@@ -419,6 +419,7 @@ function shakeInput(el) {
 // ── Construir grid de estadios ────────────────────────────────
 function buildStagesGrid() {
   const grid = document.getElementById('stages-grid');
+  grid.innerHTML = '';   // se vuelve a construir al cambiar de idioma
   // Mostrar en orden G1→G5
   const ordered = [...STAGES].reverse();
   ordered.forEach(stage => {
@@ -429,7 +430,7 @@ function buildStagesGrid() {
       <div class="stage-dot" style="background:${stage.color}; color:${stage.color};"></div>
       <div>
         <div class="stage-card-title" style="color:${stage.color};">${stage.label} — ${stage.name}</div>
-        <div class="stage-card-range">TFG: ${stage.range} mL/min/1.73 m²</div>
+        <div class="stage-card-range">${tr('TFG', 'GFR')}: ${stage.range} mL/min/1.73 m²</div>
         <div class="stage-card-desc">${stage.description}</div>
       </div>
     `;
@@ -744,10 +745,10 @@ function drawPrintSpeedometer(gfr) {
   ctx.font         = 'bold 9px Inter, sans-serif';
   ctx.textAlign    = 'center';
   ctx.textBaseline = 'top';
-  ctx.fillText('FALLA', cx - R, cy + 8);
-  ctx.fillText('RENAL', cx - R, cy + 19);
+  ctx.fillText(tr('FALLA', 'KIDNEY'), cx - R, cy + 8);
+  ctx.fillText(tr('RENAL', 'FAILURE'), cx - R, cy + 19);
   ctx.fillText('NORMAL', cx + R, cy + 8);
-  ctx.fillText('/ ALTA',  cx + R, cy + 19);
+  ctx.fillText(tr('/ ALTA', '/ HIGH'),  cx + R, cy + 19);
 
   return offscreen.toDataURL('image/png');
 }
@@ -765,7 +766,7 @@ function printReport() {
   const stage = getStage(gfrParsed) || getStageByGFR(gfrParsed);
 
   // Fecha
-  const dateStr = new Date().toLocaleDateString('es-ES', {
+  const dateStr = new Date().toLocaleDateString(tr('es-ES', 'en-US'), {
     year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit'
   });
   document.getElementById('pr-date').textContent = dateStr;
@@ -804,8 +805,10 @@ function printReport() {
     const riskCell = getRiskCell(gfrParsed, parseFloat(albRaw));
     if (riskCell) {
       document.getElementById('pr-risk-text').textContent =
-        `${riskCell.stageKey} + ${riskCell.albKey} — Riesgo ${riskCell.level.name} de progresión · ` +
-        `${riskCell.freq} control(es) de función renal al año`;
+        tr(`${riskCell.stageKey} + ${riskCell.albKey} — Riesgo ${riskCell.level.name} de progresión · ` +
+           `${riskCell.freq} control(es) de función renal al año`,
+           `${riskCell.stageKey} + ${riskCell.albKey} — ${riskCell.level.name} risk of progression · ` +
+           `${riskCell.freq} kidney function check-up(s) per year`);
       prRiskBlock.style.display = 'block';
     } else {
       prRiskBlock.style.display = 'none';
@@ -899,7 +902,7 @@ function buildRiskTable() {
   let html = '<thead><tr>' +
     '<th class="risk-corner" scope="col">' +
       '<span class="risk-axis-top">Albuminuria (uACR) →</span>' +
-      '<span class="risk-axis-left">↓ TFG</span>' +
+      '<span class="risk-axis-left">↓ ' + tr('TFG', 'GFR') + '</span>' +
     '</th>';
 
   ALB_STAGES.forEach(a => {
@@ -922,7 +925,7 @@ function buildRiskTable() {
       const alb = ALB_STAGES[i];
       html += `<td class="risk-cell" id="risk-${key}-${alb.key}"
                    style="--cell-bg:${lvl.bg}; --cell-fg:${lvl.fg}; --cell-border:${lvl.border}"
-                   title="${key} + ${alb.key}: riesgo ${lvl.name} · ${MONITOR_FREQ[key][i]} control(es) al año">
+                   title="${tr(`${key} + ${alb.key}: riesgo ${lvl.name} · ${MONITOR_FREQ[key][i]} control(es) al año`, `${key} + ${alb.key}: ${lvl.name} risk · ${MONITOR_FREQ[key][i]} check-up(s) per year`)}">
                  <span class="risk-cell-freq">${MONITOR_FREQ[key][i]}</span>
                  <span class="risk-cell-name">${lvl.name}</span>
                </td>`;
@@ -942,12 +945,12 @@ function buildRiskLegend() {
     const l = RISK_LEVELS[k];
     return `<span class="risk-legend-item">
               <span class="risk-legend-swatch" style="background:${l.bg}; border:1px solid ${l.border}"></span>
-              Riesgo ${l.name.toLowerCase()}
+              ${tr(`Riesgo ${l.name.toLowerCase()}`, `${l.name} risk`)}
             </span>`;
   }).join('') +
   `<span class="risk-legend-item">
      <span class="risk-legend-swatch" style="background:transparent; border:1px dashed var(--text-muted)"></span>
-     Nº = controles al año
+     ${tr('Nº = controles al año', 'No. = check-ups per year')}
    </span>`;
 }
 
@@ -973,7 +976,7 @@ function refreshRisk() {
   const hasAcr = albRaw !== '' && !isNaN(acr) && acr >= 0;
 
   if (!hasGfr) {
-    note.textContent = 'Ingresa tu TFG y tu albuminuria para ubicar tu casilla.';
+    note.textContent = tr('Ingresa tu TFG y tu albuminuria para ubicar tu casilla.', 'Enter your GFR and your albuminuria to find your cell.');
     return;
   }
 
@@ -985,7 +988,8 @@ function refreshRisk() {
   if (row) row.classList.add('row-active');
 
   if (!hasAcr) {
-    note.textContent = `Tu TFG te ubica en la fila ${stage.key}. Falta la albuminuria (uACR) para saber en cuál de las tres casillas estás: dentro de una misma fila el riesgo cambia mucho entre A1 y A3.`;
+    note.textContent = tr(`Tu TFG te ubica en la fila ${stage.key}. Falta la albuminuria (uACR) para saber en cuál de las tres casillas estás: dentro de una misma fila el riesgo cambia mucho entre A1 y A3.`,
+                          `Your GFR places you in row ${stage.key}. The albuminuria (uACR) is needed to know which of the three cells you are in: within the same row, the risk changes a lot between A1 and A3.`);
     return;
   }
 
@@ -999,9 +1003,13 @@ function refreshRisk() {
   note.style.setProperty('--note-bg',     cell.level.bg);
   note.style.setProperty('--note-border', cell.level.border);
   note.style.setProperty('--note-fg',     cell.level.fg);
-  note.innerHTML = `Tu casilla es <strong>${cell.stageKey} + ${cell.albKey}</strong> → riesgo ` +
-                   `<strong>${cell.level.name.toLowerCase()}</strong> de progresión renal. ` +
-                   `Controles de función renal sugeridos: <strong>${cell.freq} al año</strong>.`;
+  note.innerHTML = tr(
+    `Tu casilla es <strong>${cell.stageKey} + ${cell.albKey}</strong> → riesgo ` +
+    `<strong>${cell.level.name.toLowerCase()}</strong> de progresión renal. ` +
+    `Controles de función renal sugeridos: <strong>${cell.freq} al año</strong>.`,
+    `Your cell is <strong>${cell.stageKey} + ${cell.albKey}</strong> → ` +
+    `<strong>${cell.level.name.toLowerCase()}</strong> risk of kidney disease progression. ` +
+    `Suggested kidney function check-ups: <strong>${cell.freq} per year</strong>.`);
 
   const badge = document.getElementById('risk-result-badge');
   badge.textContent      = cell.level.name;
@@ -1013,3 +1021,43 @@ function refreshRisk() {
 // ── Inicializar cuadrícula ────────────────────────────────────
 buildRiskTable();
 refreshRisk();
+
+// ─────────────────────────────────────────────────────────────
+//  IDIOMA (ver i18n.js)
+//  Los datos se definen arriba en español; el inglés está en VR_DATOS_EN.
+// ─────────────────────────────────────────────────────────────
+function aplicarIdiomaDatos() {
+  const en = VR.lang === 'en';
+  STAGES.forEach(s => {
+    if (!s.es) s.es = { label: s.label, name: s.name, description: s.description };
+    Object.assign(s, en ? VR_DATOS_EN.estadios[s.key] : s.es);
+  });
+  ALB_STAGES.forEach(a => {
+    if (!a.es) a.es = { name: a.name, desc: a.desc };
+    Object.assign(a, en ? VR_DATOS_EN.albuminuria[a.key] : a.es);
+  });
+  Object.values(RISK_LEVELS).forEach(l => {
+    if (!l.es) l.es = l.name;
+    l.name = en ? VR_DATOS_EN.riesgo[l.key] : l.es;
+  });
+}
+
+// Vuelve a pintar todo lo que escribe app.js, conservando los valores ya ingresados
+function vrRepintar() {
+  aplicarIdiomaDatos();
+  buildStagesGrid();
+  buildRiskTable();
+  if (animFrame) cancelAnimationFrame(animFrame);
+  drawSpeedometer(lastGfr);
+  const raw = document.getElementById('gfr-input').value.trim();
+  if (raw !== '' && !isNaN(parseFloat(raw)) &&
+      !document.getElementById('result-panel').classList.contains('hidden')) {
+    const gfr = Math.max(0, Math.min(200, parseFloat(raw)));
+    updateResultPanel(gfr);
+    highlightStageCard(gfr);
+    processAlbuminuria();
+  }
+  refreshRisk();
+}
+
+VR.aplicar();

@@ -5,6 +5,7 @@
 Herramienta web para que el médico explique al paciente, en consulta, su función renal
 y su riesgo de progresión de enfermedad renal crónica. La pantalla le habla al paciente
 ("¿a qué velocidad trabaja tu riñón?"); la interpretación corresponde al médico tratante.
+Disponible en **español e inglés** (interruptor ES | EN en la cabecera).
 
 Responsable del sitio: **CiMedical**.
 
@@ -23,8 +24,8 @@ Responsable del sitio: **CiMedical**.
 ## Privacidad
 
 Todo el cálculo ocurre en el navegador. Los valores clínicos no se envían a ningún servidor,
-no se guardan y desaparecen al recargar. No hay cookies, almacenamiento local, publicidad ni
-rastreo. Al cargar la página, la IP del visitante es visible para GitHub Pages (alojamiento),
+no se guardan y desaparecen al recargar. No hay cookies, publicidad ni rastreo. Lo único que se
+guarda en el equipo del visitante es el idioma que elige (`localStorage`, clave `vr-lang`). Al cargar la página, la IP del visitante es visible para GitHub Pages (alojamiento),
 Google Fonts (tipografías), hits.sh (contador de visitas) y GoatCounter (analítica sin cookies
 ni IP; servidores en la UE; panel en https://velocimetrorenal.goatcounter.com). Detalle en el desplegable
 "Política de uso de datos" de la propia página. Marco: Ley 1581 de 2012 (Colombia).
@@ -43,10 +44,11 @@ ni IP; servidores en la UE; panel en https://velocimetrorenal.goatcounter.com). 
 ```
 index.html   la calculadora: estructura y textos (incluye la sección oculta para impresión)
 style.css    estilos de pantalla, de la guía en texto y @media print
-app.js       cálculo CKD-EPI, velocímetro (canvas), cuadrícula KDIGO, impresión
-tfg-enfermedad-renal-cronica.html
-             guía en texto («Más información») — GENERADA, no editar a mano
-tools/generar-guia.js   genera la guía leyendo estadios, albuminuria, cuadrícula y fórmulas de app.js
+app.js       cálculo CKD-EPI, velocímetro (canvas), cuadrícula KDIGO, impresión (textos en español)
+i18n.js      traducción al inglés, detección de idioma e interruptor ES | EN
+tfg-enfermedad-renal-cronica.html · gfr-chronic-kidney-disease.html
+             guías en texto («Más información») en español e inglés — GENERADAS, no editar a mano
+tools/generar-guia.js   genera las dos guías leyendo los datos de app.js (español) e i18n.js (inglés)
 robots.txt · sitemap.xml · llms.txt   para buscadores y asistentes de IA
 img/og.png · img/icono.svg            vista previa al compartir e icono de pestaña
 qr/          códigos QR del dominio para presentaciones
@@ -56,22 +58,37 @@ CNAME        dominio personalizado para GitHub Pages
 Sin framework, sin dependencias ni paso de compilación. Se abre directamente `index.html`
 en el navegador para probar en local.
 
+## Idioma (español / inglés)
+
+- El español está escrito en `index.html` y `app.js`. Todo el inglés está en `i18n.js`: datos clínicos
+  (`VR_DATOS_EN`), textos de la página por selector (`VR_TEXTOS_EN`), atributos (`VR_ATRIB_EN`) y, para los
+  textos que arma `app.js`, llamadas `tr('español', 'english')`.
+- **Idioma inicial:** el del navegador (español si está en español; si no, inglés). Lo que la persona elige
+  con el interruptor se recuerda en su equipo. `?lang=es` o `?lang=en` en la dirección manda sobre todo.
+- Al cambiar de idioma no se pierden los valores escritos: `vrRepintar()` en `app.js` vuelve a pintar todo.
+- Los robots de buscadores ven siempre el español en la calculadora (una sola dirección para los dos
+  idiomas); la versión en inglés para buscadores es la guía `gfr-chronic-kidney-disease.html`.
+- **Al cambiar un texto en español hay que cambiar su par en inglés** en `i18n.js` (o en el `tr(...)`), y
+  si es un dato clínico, regenerar las guías.
+
 ## Buscadores y asistentes de IA
 
-- **Guía en texto** (`tfg-enfermedad-renal-cronica.html`): qué es la TFG, las dos ecuaciones CKD-EPI 2021
+- **Guías en texto** (`tfg-enfermedad-renal-cronica.html` y `gfr-chronic-kidney-disease.html`, enlazadas
+  entre sí con `hreflang`): qué es la TFG, las dos ecuaciones CKD-EPI 2021
   con coeficientes y ejemplos, estadios G1–G5, albuminuria A1–A3, la cuadrícula de riesgo completa, uso en
   consulta, preguntas frecuentes y referencias. Se llega por el botón **«📖 Más información»** de la cabecera
   y por un enlace bajo «¿Cómo usar esta herramienta en consulta?».
-- La guía **se genera**: `node tools/generar-guia.js`. Lee los datos de `app.js`, así que nunca dice algo
-  distinto de la calculadora. **Correrlo cada vez que cambien rangos, textos de estadios o fórmulas en `app.js`.**
-  Los textos fijos de la guía (introducciones, preguntas frecuentes) están dentro del propio generador.
+- Las guías **se generan**: `node tools/generar-guia.js`. Lee los datos de `app.js` e `i18n.js`, así que
+  nunca dicen algo distinto de la calculadora. **Correrlo cada vez que cambien rangos, textos de estadios o
+  fórmulas.** Los textos fijos de las guías (introducciones, preguntas frecuentes) están en el generador.
 - Cada página lleva canónica, Open Graph (`img/og.png`, 1200×630), icono y datos estructurados JSON-LD
   (`WebSite` + `WebApplication`/`MedicalWebPage` en la calculadora; `MedicalWebPage` + `FAQPage` en la guía).
 - `robots.txt` permite todos los buscadores y, de forma explícita, los robots de IA. `sitemap.xml` lista las
-  dos páginas (actualizar `lastmod` y añadir páginas nuevas). `llms.txt` es el resumen para asistentes de IA.
+  tres páginas (actualizar `lastmod` y añadir páginas nuevas). `llms.txt` es el resumen para asistentes de IA.
 - Google Search Console: la etiqueta `google-site-verification` de `index.html` es la que verifica la
   propiedad. **No borrar esa línea.**
-- `style.css` se enlaza con `?v=N`; subir el número cuando cambie, para que el navegador no sirva la copia vieja.
+- `style.css`, `app.js` e `i18n.js` se enlazan con `?v=N`; subir el número cuando cambien, para que el
+  navegador no sirva la copia vieja (el de `style.css` también está en el generador: `VER_CSS`).
 
 ## Publicación
 
@@ -115,10 +132,10 @@ en el navegador para probar en local.
   GoatCounter llega con 4 a 8 horas de atraso).
 - **2026-11-25** — Buscadores y asistentes de IA: guía en texto con botón «Más información», etiquetas para
   redes, datos estructurados, `robots.txt`, `sitemap.xml`, `llms.txt`, imagen de vista previa e icono.
+  Versión en inglés de la calculadora (interruptor ES | EN, idioma inicial según el navegador) y de la guía.
 
 ## Pendiente
 
 - Aviso al usuario cuando pulsa Imprimir sin haber ingresado la TFG (hoy el botón no hace nada).
 - El evento `calculo/tfg-directa` cuenta de menos: el resultado aparece al teclear y casi nadie pulsa el botón.
 - Decidir si se reemplaza el contador `hits.sh` (cuenta cargas de página, no visitantes).
-- Guía en texto solo en español; no hay versión en inglés.

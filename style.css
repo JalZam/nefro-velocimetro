@@ -1009,3 +1009,9 @@ a.logo { text-decoration: none; }
   .gt-titulo { font-size: 1.3rem; }
 }
 @media print { .gt-main { margin: 0; max-width: none; } }
+
+/* ── INTERRUPTOR DE IDIOMA ES | EN ────────────────────────── */
+.lang-switch { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; background: var(--white); flex-shrink: 0; }
+.lang-switch button, .lang-switch a { font: 800 0.7rem 'Inter', sans-serif; letter-spacing: 0.4px; padding: 0.36rem 0.6rem; border: 0; background: transparent; color: var(--text-muted); cursor: pointer; text-decoration: none; }
+.lang-switch button.activo, .lang-switch a.activo { background: var(--primary); color: var(--white); }
+@media (max-width: 760px) { .header-right { flex-wrap: wrap; row-gap: 0.4rem; } }
