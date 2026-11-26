@@ -87,6 +87,7 @@ const VR_TEXTOS_EN = [
   ['#pr-risk-block .pr-alb-label', 'KDIGO risk (GFR × albuminuria):'],
   ['.pr-disclaimer', 'This sheet is informative and educational. It does not replace a medical consultation.&nbsp;·&nbsp; <strong>KDIGO 2024</strong> guidelines&nbsp;·&nbsp;<strong>CKD-EPI 2021</strong> formula&nbsp;·&nbsp;velocimetrorenal.com'],
   ['.pro-notice', '<strong>Tool for professional use.</strong> Designed for the physician to explain to the patient their kidney disease and their risk of progression. Interpretation is the responsibility of the treating physician.'],
+  ['#pie-hermana', 'By the same author: <a href="https://nefrona-interactiva.com/?lang=en">Nefrona Interactiva</a>, renal physiology in animations'],
   ['#pie-linea', 'Educational tool based on the <strong>KDIGO 2024</strong> guidelines · <strong>CKD-EPI 2021</strong> formula · Professional and educational use'],
   ['.privacy summary', 'Data use policy'],
   ['.privacy-body',

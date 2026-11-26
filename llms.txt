@@ -15,6 +15,10 @@ The calculator needs JavaScript. The two text guides below contain the full expl
 
 - [Velocímetro Renal](https://velocimetrorenal.com/): the calculator, the speedometer, the risk grid and the printable patient sheet. It opens in the browser's language; add `?lang=en` or `?lang=es` to force one.
 
+## Related site by the same author
+
+- [Nefrona Interactiva](https://nefrona-interactiva.com/): animated renal physiology (renal tubular acidosis types 1–4 and diuretics along the nephron), in Spanish and English.
+
 ## Sources
 
 - KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease. Kidney Int. 2024;105(4S):S117–S314.
